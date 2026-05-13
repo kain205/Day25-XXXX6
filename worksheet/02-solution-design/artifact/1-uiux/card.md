@@ -6,36 +6,28 @@ demo: ./demo.md
 
 # card.md — Lớp giao diện
 
-**Tình huống xử lý**: T-__  
+**Tình huống xử lý**: T-01 (Bịa thông tin / Ảo giác số liệu)  
 Xem `../../1-map-and-format.md` Phần A.
 
 ---
 
 ## 1. Giải pháp là gì?
 
-[Viết 2-3 câu. Nói rõ màn hình sẽ thay đổi gì để giảm rủi ro.]
-
-Ví dụ:
-
-> Khi AI trả lời về hạn nộp học bổng, giao diện hiện nhãn “Đã kiểm tra từ nguồn chính thức” hoặc “Chưa có nguồn xác minh”. Nếu thiếu nguồn, màn hình hiện nút chuyển cho tư vấn viên.
+Thêm một UI cảnh báo (Warning Banner) màu nổi bật (vàng/cam) khi AI phát hiện ảnh đầu vào có chất lượng thấp hoặc bị cắt mất trục tọa độ. Dưới cảnh báo là một Input Form để bắt buộc người dùng nhận diện và nhập tay số liệu mờ, hệ thống sẽ chặn nút "Tạo báo cáo" (disabled) cho đến khi người dùng nhập thông tin tự xác nhận.
 
 ---
 
 ## 2. Vì sao sửa ở lớp giao diện?
 
-[Chọn 1-2 ý đúng với giải pháp của nhóm.]
-
-- Người dùng dễ tin câu trả lời của AI quá mức.
-- Rủi ro xảy ra ở khoảnh khắc người dùng đọc câu trả lời.
-- Giao diện cần làm rõ: thông tin nào đã kiểm tra, thông tin nào chưa chắc.
-- Nếu prompt hoặc dữ liệu vẫn sót lỗi, giao diện là lớp chặn cuối.
+- Người dùng dễ tin câu trả lời của AI quá mức (nhất là khi chịu áp lực thời gian).
+- Giao diện cần làm rõ: thông tin nào đã kiểm tra, thông tin nào chưa chắc, ép người dùng tương tác thay vì "click-through".
 
 **Hành động phòng vệ chính**:
 
-- [ ] Thông báo rõ giới hạn
-- [ ] Phát hiện dấu hiệu thiếu nguồn
+- [x] Thông báo rõ giới hạn
+- [x] Phát hiện dấu hiệu thiếu nguồn
 - [ ] Chuyển người thật khi cần
-- [ ] Giúp người dùng kiểm tra lại nguồn
+- [x] Giúp người dùng kiểm tra lại nguồn (bằng cách nhập số tay)
 
 ---
 
@@ -45,17 +37,16 @@ Ví dụ:
 
 **Định dạng demo**:
 
-- [ ] Phác thảo màn hình
+- [x] Phác thảo màn hình
 - [ ] Luồng màn hình
-- [ ] Bản HTML đơn giản
-- [ ] Ảnh hoặc link prototype
+- [x] Bản HTML đơn giản (React Component)
+- [x] Ảnh hoặc link prototype
 
 **Thành phần cần có trong demo**:
 
-- Trạng thái có nguồn xác minh
-- Trạng thái chưa có nguồn xác minh
-- Cách người dùng chuyển sang người thật
-- Câu chữ cảnh báo ngắn, dễ hiểu
+- Trạng thái chưa có nguồn xác minh (ảnh mờ, cảnh báo vàng).
+- Khu vực hiển thị thông tin đọc được và thông tin thiếu.
+- Bắt buộc nhập tay (Manual Input).
 
 ---
 
@@ -63,20 +54,20 @@ Ví dụ:
 
 **Có thể gây vấn đề gì?**
 
-[Ví dụ: màn hình rối hơn, người dùng thấy bị làm phiền, thao tác chậm hơn.]
+Làm đứt gãy luồng làm việc tự động hóa, khiến người dùng cảm thấy phiền phức hoặc nghĩ rằng "AI kém không làm được việc", dẫn đến friction cao.
 
 **Nhóm giảm vấn đề đó bằng cách nào?**
 
-[Ví dụ: chỉ hiện cảnh báo khi câu trả lời có rủi ro cao; dùng nhãn ngắn; đưa chi tiết vào nút mở rộng.]
+Chỉ hiện UI cảnh báo này khi AI có Confidence Score < 95% từ module OCR, hoặc ảnh thực sự thiếu trục nhãn. Thiết kế form nhập liệu thật gọn gàng, điền chỉ số thay vì phải viết lại toàn bộ báo cáo, giữ lại phần dữ liệu AI đã đọc đúng (hiển thị màu xanh).
 
 ---
 
 ## 5. Checklist trước khi nộp
 
-- [ ] Giải pháp gắn đúng với một rủi ro chính.
-- [ ] Demo nhìn vào là hiểu vấn đề được chặn ở đâu.
-- [ ] Có đủ trạng thái bình thường và trạng thái lỗi.
-- [ ] Có cách chuyển sang người thật khi AI không nên tự xử lý.
-- [ ] Câu chữ trong giao diện ngắn, không đổ hết trách nhiệm cho người dùng.
+- [x] Giải pháp gắn đúng với một rủi ro chính.
+- [x] Demo nhìn vào là hiểu vấn đề được chặn ở đâu.
+- [x] Có đủ trạng thái bình thường và trạng thái lỗi.
+- [x] Có cách chuyển sang người thật khi AI không nên tự xử lý (đã chuyển quyền xử lý về cho user nhập tay).
+- [x] Câu chữ trong giao diện ngắn, không đổ hết trách nhiệm cho người dùng.
 
-**Người phụ trách**: [Tên thành viên]
+**Người phụ trách**: Nguyễn Bình Thành

@@ -11,19 +11,24 @@ File này dùng để đặt sơ đồ và mô tả ngắn cách hệ thống gi
 
 ## 1. Sơ đồ cách hệ thống xử lý
 
-```text
-[Đặt sơ đồ ở đây]
+```mermaid
+flowchart TD
+    A[User Input<br/>Upload Dashboard Image + Raw Note<br/>Time pressure] --> B[OCR & Data Confidence Scorer<br/>Specialized Model]
 
-Ví dụ khung:
+    B --> C{Confidence Score >= 95%?}
 
-Người dùng hỏi
-  -> Phân loại câu hỏi
-  -> Có phải câu hỏi rủi ro cao không?
-      -> Không: AI trả lời như bình thường
-      -> Có: Tra nguồn chính thức
-          -> Có dữ liệu: AI trả lời kèm nguồn
-          -> Không có dữ liệu: Chuyển sang người thật
-  -> Ghi lại để theo dõi lỗi
+    C -->|Yes| D[Pass Verified Data]
+    D --> E[Report Writer LLM]
+    E --> F[Final C-level Business Report]
+
+    C -->|No<br/>Blurred image / Missing axis labels / Lost legend| G[Lock Report Generation]
+    G --> H[Emit ERROR_CONFIDENCE_LOW]
+    H --> I[UI Fallback Request]
+    I --> J[Manual Input Override Screen]
+
+    J --> K[User Enters Missing Metrics<br/>Revenue T4 / Revenue T5 / Growth]
+    K --> L[Merge Manual Data<br/>with Existing Verified Data]
+    L --> E
 ```
 
 ---
@@ -32,10 +37,10 @@ Người dùng hỏi
 
 | Thành phần | Nhận gì? | Làm gì? | Trả ra gì? |
 |---|---|---|---|
-| Phân loại câu hỏi | Câu hỏi của người dùng | Xác định có rủi ro cao không | Trả lời thường / cần kiểm tra nguồn |
-| Nguồn chính thức | Chủ đề cần kiểm tra | Tìm dữ liệu mới nhất | Thông tin + nguồn |
-| Bộ xử lý khi thiếu nguồn | Kết quả không có dữ liệu | Không cho AI đoán | Yêu cầu chuyển sang người thật |
-| Ghi lại lỗi | Câu hỏi + kết quả | Lưu lỗi để xem lại | Danh sách lỗi lặp lại |
+| Môi trường Input (A) | Hình ảnh Dashboard và ghi chú của người dùng | Thu thập dữ liệu thô | Gửi sang phân tích tĩnh |
+| OCR Confidence Scorer (B) | Ảnh | Chấm điểm độ tin cậy của việc nhận diện chữ/số | Confidence Score (%) |
+| Bộ định tuyến Routing (C) | Điểm % | Rẽ nhánh quy trình (Block rủi ro) | Đi thẳng tới LLM hoặc đá văng ra Fallback |
+| Giao diện bù điểm dữ liệu (G) | Yêu cầu lấy thông số thủ công | Chờ người dùng nhập Data | Payload chuẩn để đi vào LLM (D) |
 
 ---
 
@@ -43,16 +48,15 @@ Người dùng hỏi
 
 | Khi nào lỗi xảy ra? | Hệ thống làm gì? | Người dùng thấy gì? |
 |---|---|---|
-| Nguồn chính thức không có dữ liệu | | |
-| Nguồn bị lỗi hoặc quá chậm | | |
-| Câu hỏi vượt phạm vi AI | | |
-| Lỗi này lặp lại nhiều lần | | |
+| Ảnh quá mờ, thiếu chỉ số trục Y | OCR Scorer định giá <95%, chuyển quy trình xuống Fallback | Banner vàng: "Góc ảnh bị mờ. AI không thể đánh giá. Vui lòng nhập thông số thiếu..." |
+| LLM từ chối nhưng OCR đọc được | (Ngoại lệ: LLM bị quá cẩn thận do Prompt) | Yêu cầu xác nhận lần 2 |
+| File người dùng tải lên không phải là ảnh | OCR Scorer báo lỗi File Format | Thông báo lỗi đỏ: "Vui lòng tải lên định dạng hình ảnh hợp lệ (PNG/JPG)" |
 
 ---
 
 ## 4. Kiểm tra nhanh
 
-- [ ] Sơ đồ không chỉ là “AI trả lời tốt hơn”, mà có bước kiểm tra cụ thể.
-- [ ] Có cách xử lý khi thiếu dữ liệu.
-- [ ] Có cách chuyển sang người thật.
-- [ ] Có cách theo dõi để lần sau sửa tốt hơn.
+- [x] Sơ đồ không chỉ là “AI trả lời tốt hơn”, mà có bước kiểm tra điểm tin cậy cụ thể (Confidence Scorer).
+- [x] Có cách xử lý khi thiếu/mờ dữ liệu (Fallback sang UI).
+- [x] Có cách chuyển sang người thật (Manual Input Box).
+- [x] Được viết bằng `mermaid` format để hiển thị cấu trúc.

@@ -118,6 +118,45 @@ Mẫu viết nhanh:
 - [ ] Thông báo
 ```
 
+---
+
+## 🚀 Minh họa hệ thống (Hình dung Nhanh)
+
+Để hiểu cách 3 lớp trên khóa chặt lỗi **T-01 (Nội suy bịa số lieu khi gặp ảnh mờ)**, nhóm sử dụng sự phối hợp sau:
+
+### 1-Kiến trúc (Routing Layer)
+Dữ liệu phải vượt qua vòng gửi xe (Data Confidence Scorer). Nếu dưới 95% sẽ bị văng ra Fallback Loop thay vì mím miệng cho AI phân tích.
+
+```mermaid
+flowchart TD
+    A[User Input<br/>Upload Dashboard Image + Raw Note<br/>Time pressure] --> B[OCR & Data Confidence Scorer<br/>Specialized Model]
+
+    B --> C{Confidence Score >= 95%?}
+
+    C -->|Yes| D[Pass Verified Data]
+    D --> E[Report Writer LLM]
+    E --> F[Final C-level Business Report]
+
+    C -->|No<br/>Blurred image / Missing axis labels / Lost legend| G[Lock Report Generation]
+    G --> H[Emit ERROR_CONFIDENCE_LOW]
+    H --> I[UI Fallback Request]
+    I --> J[Manual Input Override Screen]
+
+    J --> K[User Enters Missing Metrics<br/>Revenue T4 / Revenue T5 / Growth]
+    K --> L[Merge Manual Data<br/>with Existing Verified Data]
+    L --> E
+```
+
+### 2-Prompt (Instruction Layer)
+System quy định cứng từ khóa `<ERROR_CONFIDENCE_LOW>`, không có chỗ cho việc xin phép sếp. Nếu phát hiện thiếu số liệu, lập tức đẩy cờ báo hiệu về UI.
+
+### 3-UI/UX (Fallback Presentation Layer)
+Tiếp nhận được cờ lỗi hoặc routing từ Architecture, UI sẽ chặn nút `Sinh báo cáo` lại, hiển thị khung cảnh báo và mở 3 ô Input cho User điền bù doanh thu T4, T5, Tăng trưởng một cách minh bạch.
+
+![Demo Fallback UI](./1-uiux/image.png)
+
+Nhờ vậy, mọi nguyên nhân gây ra Hallucination từ ảnh mờ đều bị vô hiệu hóa!
+
 ## Ví dụ ngắn — lớp giao diện
 
 ```markdown

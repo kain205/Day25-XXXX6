@@ -1,23 +1,3 @@
----
-artifact: 1 — Demo giao diện
-format: phác thảo / ảnh / HTML / các màn hình chính
----
-
-# demo.md — Demo giao diện
-
-File này dùng để đặt phần trực quan của giải pháp.
-
-Nếu nhóm có ảnh, bản vẽ hoặc link prototype, đặt link vào đây. Nếu làm bằng Markdown, dùng khung bên dưới.
-
----
-
-## 1. Màn hình chính
-
-![Warning UI](./image.png)
-
-*Source code React/Tailwind đính kèm Component:*
-
-```tsx
 import React, { useMemo, useState } from "react";
 
 const Icon = ({ children, className = "" }) => (
@@ -162,32 +142,3 @@ export default function AIBusinessReportGeneratorFallback() {
     </div>
   );
 }
-```
-
----
-
-## 2. Trạng thái cần minh họa
-
-| Trạng thái | Người dùng thấy gì? | Người dùng làm gì tiếp? |
-|---|---|---|
-| Có nguồn xác minh | Không hiển thị cảnh báo (trạng thái ẩn), chỉ hiện nội dung báo cáo trơn tru. | N/A (Xem kết quả báo cáo) |
-| Chưa có nguồn xác minh | Banner cảnh báo cam `⚠️ AI không thể đọc chính xác 100% số liệu`. | Người dùng bị dừng ở form nhập liệu để gõ thông số thủ công. |
-| AI không nên tự trả lời | Nút Submit `Sinh Báo Cáo` bị Disabled khóa xám. | Người dùng điền số vào các ô [Doanh thu T4], [Doanh thu T5]... |
-| Cần chuyển sang người thật | Người dùng chính là "người thật" (Analyst) phải tự lấy file doanh thu excel đối soát. | Người dùng mở file nội bộ đối chiếu -> Nhập số -> Nút Summit chuyển màu Xanh -> Bấm tạo báo cáo. |
-
----
-
-## 3. Ghi chú cho từng thành phần
-
-- [File Attach Component]: Hiển thị "Dashboard_Q2.png" báo đỏ `Low Resolution` để báo cho người dùng biết lỗi do ảnh của họ chứ không phải hệ thống AI lỗi ngớ ngẩn.
-- [Warning Banner]: Box màu cam đập vào mắt mô tả lý do: "Ảnh mờ ở trục tung..." ép user đọc rủi ro ảo giác số liệu trình lên C-level.
-- [Form nhập số thủ công]: Nhỏ gọn, chỉ bắt điền những con số AI không đọc được, không quá làm phiền người dùng.
-
----
-
-## 4. Kiểm tra nhanh
-
-- [x] Nhìn vào demo là hiểu rủi ro đang được chặn ở đâu.
-- [x] Có trạng thái khi AI không có đủ thông tin.
-- [x] Có cách chuyển sang người thật.
-- [x] Câu chữ đủ ngắn để đặt trên màn hình thật.

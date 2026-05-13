@@ -31,8 +31,8 @@ Ba lớp này bổ sung cho nhau. Nếu một lớp lọt lỗi, lớp khác v�
 
 ## Thông tin nhóm
 
-- **Chủ đề**: [...]
-- **Thành viên**: [...]
+- **Chủ đề**: AI Business Report Generator
+- **Thành viên**: Nguyễn Bình Thành, Phạm Hoàng Kim Liên, Nguyễn Tiến Huy Hoàng
 - **Ngày**: 2026-05-13
 
 ---
@@ -41,22 +41,22 @@ Ba lớp này bổ sung cho nhau. Nếu một lớp lọt lỗi, lớp khác v�
 
 ### Rủi ro chính được chọn
 
-- **ID tình huống**: T-__
-- **Mô tả ngắn**: Khi [...], AI có xu hướng [...], gây [...] cho [...]
-- **Mức độ**: [Nặng / Vừa]
-- **Điểm rủi ro**: [...]
-- **Vì sao chọn tình huống này**: [...]
+- **ID tình huống**: T-01
+- **Mô tả ngắn**: Khi ảnh hóa đơn mờ hoặc thiếu chi tiết, AI có xu hướng bịa số liệu (nội suy vô căn cứ), gây rủi ro sai lệch báo cáo cho các cấp Quản lý C-level.
+- **Mức độ**: Nặng
+- **Điểm rủi ro**: 20
+- **Vì sao chọn tình huống này**: Sản phẩm core của nhóm là OCR và LLM Data analysis. Optical hallucination là bài toán đặc thù và cốt lõi nhất.
 
 ### Tìm nguyên nhân gốc
 
 Đừng chỉ mô tả lỗi. Hãy trả lời: vì sao lỗi xảy ra?
 
-- [ ] Thiếu nguồn dữ liệu đúng.
-- [ ] AI đoán khi không biết.
+- [x] Thiếu nguồn dữ liệu đúng (Ảnh mờ, mất góc).
+- [x] AI đoán khi không biết (Cố đáp ứng lệnh tạo báo cáo bằng mọi giá).
 - [ ] Giao diện khiến người dùng tin quá mức.
-- [ ] Quy trình thiếu người duyệt hoặc thiếu bước chuyển sang người thật.
+- [x] Quy trình thiếu người duyệt hoặc thiếu bước chuyển sang người thật (Chưa có fallback).
 - [ ] Không có theo dõi sau khi ra mắt.
-- [ ] Khác: [...]
+- [x] Khác: Lỗ hổng Pipeline (Thiếu Data Confidence Scorer chặn luồng tại Backend).
 
 ### Bảng nối nguyên nhân với tầng sửa
 
@@ -107,15 +107,15 @@ Gợi ý theo mức rủi ro:
 
 ### Kết luận Phần A
 
-**Nguyên nhân gốc**: [...]
+**Nguyên nhân gốc**: Pipeline thiếu kiểm tra chất lượng ảnh đầu vào, cùng sự dễ dãi của Prompt khiến AI bị ép bù lỗ dữ liệu mờ.
 
-**Tầng chính cần sửa**: [...]
+**Tầng chính cần sửa**: Architecture (Pipeline phân luồng) & UI/UX (Bắt luồng Fallback).
 
 **Vì sao cần 3 lớp giải pháp**:
 
-- Lớp giao diện: [...]
-- Lớp chỉ dẫn AI: [...]
-- Lớp kiến trúc dữ liệu: [...]
+- Lớp giao diện: Hiển thị cảnh báo trực quan cho người dùng, giải thích lý do hệ thống dừng, cung cấp form để bù dữ liệu mờ thủ công.
+- Lớp chỉ dẫn AI: Ra lệnh cứng (Zero-hallucination) ngắt tự nội suy và thiết lập key `<ERROR_CONFIDENCE_LOW>` giao tiếp với UI. 
+- Lớp kiến trúc dữ liệu: Cắm chốt kiểm tra "Data Confidence Scorer >= 95%" trước LLM. Khai thông bế tắc bằng cơ chế Fallback rẽ nhánh.
 
 ---
 
@@ -125,15 +125,15 @@ Mỗi lớp cần một bản demo. Demo giúp biến ý tưởng thành thứ t
 
 | Lớp | Thư mục | Định dạng demo chọn | Thời gian dự kiến |
 |---|---|---|---|
-| Giao diện | `1-uiux` | [vẽ tay / Excalidraw / Figma / HTML / ASCII / Mermaid] | __ phút |
-| Chỉ dẫn AI | `2-prompt` | [bản prompt trong Markdown + ví dụ] | __ phút |
-| Kiến trúc dữ liệu | `3-architecture` | [ASCII / Mermaid / sơ đồ hộp-mũi tên] | __ phút |
+| Giao diện | `1-uiux` | Tailwind/React Component UI (tích hợp trong code block) | 15 phút |
+| Chỉ dẫn AI | `2-prompt` | System Prompt tĩnh + Bảng Test case Fallback | 10 phút |
+| Kiến trúc dữ liệu | `3-architecture` | Sơ đồ Mermaid (Flowchart) | 10 phút |
 
 **Lý do chọn demo**
 
-- Giao diện: [...]
-- Chỉ dẫn AI: [...]
-- Kiến trúc dữ liệu: [...]
+- Giao diện: Component chạy thực tế sẽ thể hiện đúng logic khoá thao tác nếu chưa nhập đủ số.
+- Chỉ dẫn AI: Markdown có syntax highlight rất phù hợp để trình bày cấu trúc Prompt.
+- Kiến trúc dữ liệu: Mermaid giúp visualize rõ dòng chảy điều hướng theo điều kiện IF/ELSE dễ dàng.
 
 Gợi ý: có thể dùng AI để dựng nhanh bản nháp demo, nhưng nhóm phải đọc lại và sửa.
 
@@ -154,10 +154,10 @@ Ghi tóm tắt ở đây. Chi tiết nằm trong `card.md` và `demo.*` của t�
 
 ### Lớp 1 — Giao diện (`artifact/1-uiux/`)
 
-- **Cách tiếp cận**: [...]
-- **Hành động phòng vệ bao phủ**: [Thông báo / Phát hiện / Khắc phục]
-- **Demo**: [...]
-- **Trạng thái**: [Chưa làm / Đang làm / Xong]
+- **Cách tiếp cận**: Xây dựng Fallback Warning Box, chặn nút Submit khi chưa bù giá trị.
+- **Hành động phòng vệ bao phủ**: Thông báo & Khắc phục
+- **Demo**: React Component hiển thị tình huống Thiếu Form T4/T5
+- **Trạng thái**: Xong
 
 Link chi tiết:
 
@@ -166,10 +166,10 @@ Link chi tiết:
 
 ### Lớp 2 — Chỉ dẫn AI (`artifact/2-prompt/`)
 
-- **Cách tiếp cận**: [...]
-- **Hành động phòng vệ bao phủ**: [Ngăn / Từ chối / Hỏi lại / Dẫn nguồn]
-- **Demo**: [...]
-- **Trạng thái**: [Chưa làm / Đang làm / Xong]
+- **Cách tiếp cận**: Định biên Zero-hallucination, ném keyword lỗi bắt Frontend nhận diện.
+- **Hành động phòng vệ bao phủ**: Ngăn & Từ chối
+- **Demo**: Tình huống "Sếp ép chế lý do lạm phát", AI tuân thủ nguyên tắc.
+- **Trạng thái**: Xong
 
 Link chi tiết:
 
@@ -178,10 +178,10 @@ Link chi tiết:
 
 ### Lớp 3 — Kiến trúc dữ liệu (`artifact/3-architecture/`)
 
-- **Cách tiếp cận**: [...]
-- **Hành động phòng vệ bao phủ**: [Ngăn / Phát hiện / Khắc phục]
-- **Demo**: [...]
-- **Trạng thái**: [Chưa làm / Đang làm / Xong]
+- **Cách tiếp cận**: Thêm Scorer trung gian, rẽ nhánh >=95% qua AI, <95% qua Manual UI.
+- **Hành động phòng vệ bao phủ**: Ngăn & Phát hiện
+- **Demo**: Sơ đồ Mermaid định tuyến hệ thống
+- **Trạng thái**: Xong
 
 Link chi tiết:
 
@@ -194,10 +194,10 @@ Link chi tiết:
 
 | Câu hỏi | Trả lời |
 |---|---|
-| Rủi ro chính đã chọn là gì? | T-__ |
-| Nguyên nhân gốc là gì? | [...] |
-| 3 lớp giải pháp đã đủ chưa? | Giao diện: __ / Chỉ dẫn AI: __ / Kiến trúc: __ |
-| 4 hành động đã bao phủ chưa? | Ngăn: __ / Phát hiện: __ / Khắc phục: __ / Thông báo: __ |
+| Rủi ro chính đã chọn là gì? | T-01 (Bịa thông tin số do nội suy) |
+| Nguyên nhân gốc là gì? | Data Scorer chưa có mặt để đo lường độ phân giải thấp. AI dễ thỏa hiệp. |
+| 3 lớp giải pháp đã đủ chưa? | Giao diện: Xong / Chỉ dẫn AI: Xong / Kiến trúc: Xong |
+| 4 hành động đã bao phủ chưa? | Ngăn: Xong / Phát hiện: Xong / Khắc phục: Xong / Thông báo: Xong |
 | Nhóm khác đã góp ý chưa? | [...] |
 | Nhóm đã sửa gì sau phản biện? | [...] |
 

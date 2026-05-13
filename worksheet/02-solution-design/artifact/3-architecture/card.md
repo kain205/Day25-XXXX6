@@ -6,35 +6,27 @@ demo: ./demo.md
 
 # card.md — Lớp kiến trúc dữ liệu
 
-**Tình huống xử lý**: T-__  
+**Tình huống xử lý**: T-01 (Bịa thông tin do nội suy số liệu)  
 Xem `../../1-map-and-format.md` Phần A.
 
 ---
 
 ## 1. Giải pháp là gì?
 
-[Viết 2-3 câu. Nói rõ hệ thống cần thêm nguồn dữ liệu, bước kiểm tra, cách chuyển câu hỏi hoặc cách ghi lại lỗi nào.]
-
-Ví dụ:
-
-> Với câu hỏi về học bổng, hệ thống phải tra nguồn tuyển sinh chính thức trước khi AI trả lời. Nếu nguồn không có dữ liệu hoặc bị lỗi, AI không được đoán mà chuyển câu hỏi cho tư vấn viên.
+Thêm "OCR & Data Confidence Scorer" vào trước bước sinh báo cáo của LLM. Hệ thống sẽ chấm điểm độ tin cậy của việc nhận diện ký tự từ ảnh. Nếu độ tin cậy dưới 95% (hoặc phát hiện mờ/thiếu nét), hệ thống ngắt luồng đi tới LLM và điều hướng sang quy trình nhập liệu thủ công (Manual Input UI).
 
 ---
 
 ## 2. Vì sao sửa ở lớp kiến trúc dữ liệu?
 
-[Chọn 1-2 ý đúng với giải pháp của nhóm.]
-
-- Nguyên nhân chính là thiếu nguồn đúng hoặc nguồn cũ.
-- AI đang phải tự nhớ thông tin thay vì đọc từ nguồn đáng tin cậy.
-- Cần kiểm tra dữ liệu trước khi câu trả lời được tạo ra.
-- Cần ghi lại lỗi để nhóm biết lỗi nào lặp lại nhiều.
+- Nguyên nhân chính là AI nhận luồng dữ liệu mù/thiếu nét và bị ép buộc phải sinh kết quả cuối cùng.
+- Cần kiểm tra chất lượng dữ liệu (Confidence Score) trước khi cho phép AI chạm vào dữ liệu đó để phân tích.
 
 **Hành động phòng vệ chính**:
 
-- [ ] Ngăn lỗi bằng nguồn dữ liệu đúng
-- [ ] Phát hiện khi nguồn thiếu hoặc lỗi
-- [ ] Khắc phục bằng cách chuyển sang người thật
+- [x] Ngăn lỗi bằng nguồn dữ liệu đúng (Chặn ảnh mờ)
+- [x] Phát hiện khi nguồn thiếu hoặc lỗi (Confidence Score < 95%)
+- [x] Khắc phục bằng cách chuyển sang người thật (Manual Input UI)
 - [ ] Ghi lại lỗi để cải thiện sau
 
 ---
@@ -45,11 +37,9 @@ Ví dụ:
 
 Demo cần có:
 
-- Sơ đồ cách dữ liệu đi qua hệ thống
-- Nguồn dữ liệu chính thức
-- Bước kiểm tra trước khi AI trả lời
-- Cách xử lý khi nguồn thiếu, lỗi hoặc quá cũ
-- Cách ghi lại hoặc theo dõi lỗi
+- Sơ đồ cách dữ liệu (hình ảnh dashboard) đi qua hệ thống.
+- Bước kiểm tra OCR Confidence Score rẽ nhánh >=95% và <95%.
+- Cách chuyển luồng sang UI nhập tay.
 
 ---
 
@@ -57,20 +47,20 @@ Demo cần có:
 
 **Có thể gây vấn đề gì?**
 
-[Ví dụ: trả lời chậm hơn, phụ thuộc vào nguồn dữ liệu, tốn công duy trì, hệ thống phức tạp hơn.]
+Hệ thống phức tạp hơn, thời gian xử lý ảnh ban đầu lâu hơn chút xíu, và có thể sẽ ngắt luồng nhiều lần nếu các chi nhánh nộp báo cáo scan bằng máy kém chất lượng.
 
 **Nhóm giảm vấn đề đó bằng cách nào?**
 
-[Ví dụ: lưu tạm dữ liệu phổ biến, có thông báo khi nguồn lỗi, đặt người phụ trách cập nhật nguồn, giới hạn chỉ áp dụng với câu hỏi rủi ro cao.]
+Sử dụng cơ chế Fallback (chuyển về điền tay tự nhiên) thay vì Block Error (cấm tạo báo cáo). Quá trình này giúp Analyst tuy bù tay các thông số mờ nhưng vẫn tận dụng AI hoàn tất phần báo cáo viết lách mệt mỏi.
 
 ---
 
 ## 5. Checklist trước khi nộp
 
-- [ ] Sơ đồ cho thấy dữ liệu đi từ đâu đến đâu.
-- [ ] Có bước kiểm tra nguồn trước khi AI trả lời.
-- [ ] Có cách xử lý khi không có dữ liệu.
-- [ ] Có cách chuyển sang người thật với tình huống rủi ro cao.
+- [x] Sơ đồ cho thấy dữ liệu đi từ đâu đến đâu.
+- [x] Có bước kiểm tra nguồn trước khi AI trả lời.
+- [x] Có cách xử lý khi không có dữ liệu (ảnh mờ).
+- [x] Có cách chuyển sang người thật với tình huống rủi ro cao.
 - [ ] Có cách biết lỗi này có đang lặp lại không.
 
-**Người phụ trách**: [Tên thành viên]
+**Người phụ trách**: Phạm Hoàng Kim Liên
